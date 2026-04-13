@@ -146,8 +146,9 @@
     .wbadge.support{background:#f0f4f8;color:var(--muted);}
     .team-items-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
     .team-item-row{display:flex;gap:6px;align-items:flex-start;}
-    .team-item-text{font-size:13px;color:var(--muted);flex:1;line-height:1.45;}
-    .team-item-text::before{content:'→ ';color:var(--line);}
+    .team-item-text{font-size:13px;color:var(--muted);flex:1;line-height:1.45;display:flex;gap:6px;align-items:flex-start;}
+    .team-item-arrow{flex-shrink:0;color:var(--line);margin-top:1px;}
+    .team-item-label{flex:1;}
     .btn-del-item{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:0 4px;line-height:1;flex-shrink:0;transition:color .15s;}
     .btn-del-item:hover{color:var(--red);}
     .add-item-row{display:flex;gap:6px;margin-top:4px;}
@@ -677,14 +678,16 @@ function addDays(dateStr, days) {
 
 function fmtDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+  var parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  return parts[2] + '/' + parts[1] + '/' + parts[0];
 }
 
 function fmtShort(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('id-ID', { day:'numeric', month:'short' });
+  var parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  return parts[2] + '/' + parts[1];
 }
 
 function getWeekDates(weekId, startDate) {
@@ -840,7 +843,7 @@ function renderTeam() {
     var roleKey = p.role.replace(/[^a-z0-9]/gi,'_');
     var itemsHtml = items.map(function(item, idx) {
       return '<div class="team-item-row">'
-        + '<span class="team-item-text">' + escHtml(item) + '</span>'
+        + '<span class="team-item-text"><span class="team-item-arrow">→</span><span class="team-item-label">' + escHtml(item) + '</span></span>'
         + '<button class="btn-del-item" onclick="delTeamItem(\'' + escHtml(p.role) + '\',' + idx + ')" title="Hapus">×</button>'
         + '</div>';
     }).join('');
